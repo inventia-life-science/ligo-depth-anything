@@ -2,7 +2,7 @@
 GPU memory utility helpers.
 
 Shared cleanup and memory checking logic used by both the backend API and
-the Gradio UI to keep memory-management behaviour consistent.
+the Gradio UI to keep memory-management behavior consistent.
 """
 from __future__ import annotations
 
