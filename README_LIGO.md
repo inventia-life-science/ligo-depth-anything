@@ -36,7 +36,7 @@ uv pip install 'torch==2.9.1+cu128' --index-url https://download.pytorch.org/whl
 Verify the installation:
 
 ```bash
-python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
+uv run python -c "import torch; print(torch.__version__, torch.cuda.is_available())"
 # Should output: 2.9.1+cu128 True
 ```
 
@@ -92,6 +92,33 @@ Replace `DA3-BASE` with your desired model:
 - `depth-anything/DA3-BASE` - Base model
 - `depth-anything/DA3-LARGE` - Large model (requires more VRAM)
 - `depth-anything/DA3-GIANT` - Largest model
+- `depth-anything/DA3METRIC-LARGE` - **Metric depth model** (see below)
+
+#### DA3METRIC-LARGE - Metric Depth Estimation
+
+**Use Case**: The `DA3METRIC-LARGE` model is specialized for **metric depth estimation** in monocular settings. Unlike the standard models which predict relative depth (depth values are normalized/scaled), this model predicts depth in **real-world units** (meters, centimeters, etc.).
+
+**Key Features:**
+- ✅ Metric depth (real-world scale)
+- ✅ Relative depth estimation
+- ✅ Sky segmentation
+- ❌ **No pose estimation** (monocular only)
+- ❌ No multi-view capabilities
+- ❌ No Gaussian splatting
+
+**When to Use:**
+- Applications requiring actual distance measurements (e.g., robotics, AR/VR, surveying)
+- When you need depth values in meters/centimeters rather than normalized values
+- Single-image depth estimation where scale matters
+- **Not suitable** if you need camera pose estimation or multi-view depth fusion
+
+**Example Usage:**
+```python
+model = DepthAnything3.from_pretrained("depth-anything/DA3METRIC-LARGE")
+prediction = model.inference([image])
+# prediction.depth will contain metric depth values (in meters)
+# prediction.is_metric will be True
+```
 
 ### 2.2 Using Local Models in Code
 
@@ -108,8 +135,10 @@ model = DepthAnything3.from_pretrained("/home/tom/repos/Depth-Anything-3/models/
 ### Model Size Recommendations
 
 - **4GB VRAM**: Use `DA3-SMALL` with `process_res=320-384`
-- **8GB VRAM**: Use `DA3-BASE` with `process_res=384-504`
+- **8GB VRAM**: Use `DA3-BASE` or `DA3METRIC-LARGE` with `process_res=384-504`
 - **16GB+ VRAM**: Can use `DA3-LARGE` or `DA3-GIANT` with higher resolutions
+
+**Note**: `DA3METRIC-LARGE` has the same parameter count (0.35B) as `DA3-LARGE`, so VRAM requirements are similar. Use it when you need metric depth values rather than relative depth.
 
 ## 3. Run Files
 
@@ -199,8 +228,8 @@ python -c "import torch; print(torch.cuda.is_available())"
 
 ### Model Paths
 
-- **Hugging Face (online)**: `"depth-anything/DA3-BASE"`
-- **Local (offline)**: `"/home/tom/repos/Depth-Anything-3/models/DA3-BASE"`
+- **Hugging Face (online)**: `"depth-anything/DA3-BASE"` (or `DA3-SMALL`, `DA3-LARGE`, `DA3METRIC-LARGE`, etc.)
+- **Local (offline)**: `"/home/tom/repos/Depth-Anything-3/models/DA3-BASE"` (adjust path as needed)
 
 ### Output Directories
 
