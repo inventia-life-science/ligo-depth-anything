@@ -82,11 +82,18 @@ We introduce a new benchmark to rigorously evaluate geometry prediction models o
 ### 📦 Installation
 
 ```bash
-pip install torch\>=2 torchvision
-pip install -e . # Basic
-pip install -e ".[gs]" # Gaussians Estimation and Rendering
-pip install -e ".[app]" # Gradio, python>=3.10
-pip install -e ".[all]" # ALL
+# (Recommended) Using uv with CUDA-enabled PyTorch
+uv venv .venv
+source .venv/bin/activate
+uv pip install 'torch==2.9.1+cu128' --index-url https://download.pytorch.org/whl/cu128
+uv sync --extra all
+
+# (Alternative) Using pip directly
+pip install "torch>=2" torchvision
+pip install -e .            # Basic
+pip install -e ".[gs]"      # Gaussians Estimation and Rendering
+pip install -e ".[app]"     # Gradio, python>=3.10
+pip install -e ".[all]"     # ALL
 ```
 
 For detailed model information, please refer to the [Model Cards](#-model-cards) section below.
